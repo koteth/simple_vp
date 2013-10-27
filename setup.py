@@ -17,9 +17,9 @@ distutils.core.setup(
     name="simple_vp",
     version=version,
     packages = ["simple_vp"],
-    package_data = {
-        "simple_vp": ["adata.csv"],
-        },
+    #package_data = {
+    #    "simple_vp": ["adata.csv"],
+    #    },
     author="Koteth",
     author_email="koteth@gmail.com",
     license="http://www.apache.org/licenses/LICENSE-2.0",

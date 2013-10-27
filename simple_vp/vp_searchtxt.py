@@ -10,7 +10,7 @@ def levenshtein(a,b):
         # Make sure n <= m, to use O(min(n,m)) space
         a,b = b,a
         n,m = m,n
-        
+
     current = range(n+1)
     for i in range(1,m+1):
         previous, current = current, [i]+[0]*n
@@ -20,17 +20,18 @@ def levenshtein(a,b):
             if a[j-1] != b[i-1]:
                 change = change + 1
             current[j] = min(add, delete, change)
-            
+
     return current[n]
 
-def main():
 
-    f = open( '4000-most-common-english-words-csv.csv')
-    f.next() 
-    aset = [ w.strip() for w in f]
+def main(file_name):
+
+    f = open(file_name)
+    f.next()
+    aset = [w.strip() for w in f]
     rad = 4.4
 
-    distance = levenshtein 
+    distance = levenshtein
 
     s = time.time()
     print "\ninput set %s points" % len(aset)
@@ -43,7 +44,7 @@ def main():
         q = raw_input(">>")
 
         s = time.time()
-        se = VpSearch(root, q, rad, 10 ) 
+        se = VpSearch(root, q, rad, 10)
         out = se.knn()
         print se.stat
         print "founded %s results" % len(out)
@@ -52,10 +53,10 @@ def main():
         print
 
 
-import cProfile
-
 if __name__ == '__main__':
-
-    main()
-    #cProfile.run('main()')
-    
+    try:
+        file_name = sys.argv[1]
+        main(file_name)
+    except:
+        print "usage:\nvp_searchtxt.py <filename>"
+        print "file name must be a column of words"

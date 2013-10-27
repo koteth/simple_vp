@@ -1,6 +1,5 @@
 from simple_vp import *
 import time
-import pylab as plt
 
 
 def main():
@@ -19,26 +18,28 @@ def main():
     print "searching..."
 
     #print root.dump()
-    se = VpSearch(root, q, rad, 30 ) 
+    se = VpSearch(root, q, rad, 30)
     #out = se.search()
     out = se.knn()
-    for k,v in sorted(se.stat.items()):
-        print k,v
+    for k, v in sorted(se.stat.items()):
+        print k, v
 
     print "out: %s" % len(out)
     print "done", time.time() - s
 
-    projx = lambda x: map(lambda y: y[0], x)
-    projy = lambda x: map(lambda y: y[1], x)
-    fig, ax = plt.subplots()
-    ax.scatter(projx(aset), projy(aset), 20)
-    ax.scatter([q[0]], [q[1]], 20, color='g')
-    ax.scatter(projx(out), projy(out), 20, color='r')
+    try:
+        import pylab as plt
+        projx = lambda x: map(lambda y: y[0], x)
+        projy = lambda x: map(lambda y: y[1], x)
+        fig, ax = plt.subplots()
+        ax.scatter(projx(aset), projy(aset), 20)
+        ax.scatter([q[0]], [q[1]], 20, color='g')
+        ax.scatter(projx(out), projy(out), 20, color='r')
 
-    ax.annotate("query", xy=q)
-    plt.show()
+        ax.annotate("query", xy=q)
+        plt.show()
+    except:
+        pass
 
 if __name__ == '__main__':
     main()
-    import cProfile
-    #cProfile.run('main()')

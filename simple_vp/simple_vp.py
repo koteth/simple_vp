@@ -14,7 +14,7 @@ choose_right = lambda q, r, n: n.distance(n.pivot, q) + r >= n.median
 class VpNode(object):
     ids = count(0)
 
-    __slots__ = ('is_leaf', 'aset', 'level', 'distance', 
+    __slots__ = ('is_leaf', 'aset', 'level', 'distance',
                  'pivot', 'dist_set', 'median', 'left', 'right',
                  'type')
 
@@ -29,13 +29,13 @@ class VpNode(object):
         self.pivot = aset[0]
         if len(aset) > 1:
             self._set_non_leaf_params()
-    
+
     def _set_non_leaf_params(self):
         self.is_leaf = False
         self.pivot = self._get_pivot()
         self.dist_set = self._get_dist_set()
         self.median = self._get_median()
-        nodes = [VpNode(ch, level=self.level + 1, 
+        nodes = [VpNode(ch, level=self.level + 1,
                  distance=self.distance)
                  for ch in self._split_set()]
         nodes[0].type = 'l'
@@ -56,31 +56,30 @@ class VpNode(object):
     def _split_set(self):
         hl = len(self.dist_set) // 2
         out = (self.dist_set[:hl], self.dist_set[hl:])
-        return (map(itemgetter(0),v) for v in out )
-        
+        return (map(itemgetter(0), v) for v in out)
+
     def dump(self):
         print self
         if not self.is_leaf:
             self.left.dump()
             self.right.dump()
 
-
     def __str__(self):
-        st_obj = { '_id': id(self), 'is_leaf': self.is_leaf,
-                   'level': self.level, 'type': self.type, 
-                   'pivot': self.pivot }
+        st_obj = {'_id': id(self), 'is_leaf': self.is_leaf,
+                  'level': self.level, 'type': self.type,
+                  'pivot': self.pivot}
         if self.is_leaf:
             st_obj.update({'point': self.aset[0]})
         else:
             st_obj.update({'left': id(self.left),
-                           'right': id(self.right),})
+                           'right': id(self.right)})
 
-        return json.dumps(st_obj) 
+        return json.dumps(st_obj)
 
 
 class VpSearch(object):
 
-    def __init__(self, root , query, rad, max_n=20):
+    def __init__(self, root, query, rad, max_n=20):
         self.root = root
         self.query = query
         self.rad = rad
@@ -96,27 +95,25 @@ class VpSearch(object):
     def _incr_stat(self, label):
         self.stat[label] = self.stat.get(label, 0) + 1
 
-
     def knn(self):
         self.stat = {}
         self._knn(self.root, self.query)
-        self.knnresults = [ heapq.heappop( self.knnresults) for i in range( min( self.max_n, len(self.knnresults) ) ) ]
-        return [ x[1] for x in self.knnresults ]
+        self.knnresults = [heapq.heappop(self.knnresults)
+                           for i in range(min(self.max_n, len(self.knnresults)))]
+        return [x[1]for x in self.knnresults]
 
-    def _knn(self,node, q):
+    def _knn(self, node, q):
         if node.is_leaf:
-            
             for i in node.aset:
-                i = ( self.distance( i , self.query ), i ) 
-                heapq.heappush( self.knnresults, i)
-            if len( self.knnresults ) > self.max_n+1:
-                self.knnrad = min( self.knnresults[self.max_n+1 ][0] , self.knnrad ) 
-            return 
+                i = (self.distance(i, self.query), i)
+                heapq.heappush(self.knnresults, i)
+            if len(self.knnresults) > self.max_n+1:
+                self.knnrad = min(self.knnresults[self.max_n+1][0], self.knnrad)
+            return
 
         for n, c in ((node.left, choose_left), (node.right, choose_right)):
-            if c(q, self.knnrad, node) :
+            if c(q, self.knnrad, node):
                 self._knn(n, q)
                 self._incr_stat('expanded')
             else:
                 self._incr_stat('skipped level:%s' % n.level)
-  
