@@ -20,8 +20,10 @@ Hello, world
 Here is a simple "Hello, world" example web app for Tornado::
 
 
-    from simple_vp import *
+    from simple_vp.simple_vp import *
+    import random
 
+    import time
 
     rn = lambda: random.randint(0, 10000)
     aset = [(rn(), rn()) for i in range(40000)]
