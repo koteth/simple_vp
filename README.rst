@@ -5,7 +5,7 @@ Simple Vp-Tree
 A Pure python implementation of vp_tree.
 Is a simple but yet powerfull implementation of
 a vp-tree. It implements a simple knn search and
-a way to persist the tree.
+will implement a way to persist the tree.
 
 
 Links
