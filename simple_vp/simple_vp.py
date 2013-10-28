@@ -24,7 +24,7 @@ class VpNode(object):
         self.is_leaf = True
         self.aset = aset
         self.level = level
-        self.type = 'r'
+        self.type = 'root'
         self.distance = distance
         self.pivot = aset[0]
         if len(aset) > 1:
@@ -59,12 +59,13 @@ class VpNode(object):
         return (map(itemgetter(0), v) for v in out)
 
     def dump(self):
-        print self
+        o = [ self._str_obj() ]
         if not self.is_leaf:
-            self.left.dump()
-            self.right.dump()
+            o += self.left.dump()
+            o += self.right.dump()
+        return o
 
-    def __str__(self):
+    def _str_obj(self):
         st_obj = {'_id': id(self), 'is_leaf': self.is_leaf,
                   'level': self.level, 'type': self.type,
                   'pivot': self.pivot}
@@ -73,7 +74,11 @@ class VpNode(object):
         else:
             st_obj.update({'left': id(self.left),
                            'right': id(self.right)})
+        return st_obj
 
+  
+    def __str__(self):
+        st_obj = _str_obj(self)
         return json.dumps(st_obj)
 
 
